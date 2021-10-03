@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ixoye_chat/models/usuario.dart';
+import 'package:ixoye_chat/services/auth_service.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class UsuariosScreen extends StatefulWidget {
@@ -22,10 +24,14 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final authService = Provider.of<AuthService>(context);
+    final usuario = authService.usuario;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Mi Nombre',
+          usuario.nombre,
           style: TextStyle(
             color: Colors.black87
           ),
@@ -34,7 +40,11 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
         elevation: 1,
         backgroundColor: Colors.white,
         leading: IconButton(
-          onPressed: (){}, 
+          onPressed: (){
+            //TODO: DEsconectar del socket
+            Navigator.pushReplacementNamed(context, 'login');
+            AuthService.deleteToken();
+          }, 
           icon: Icon(Icons.exit_to_app, color: Colors.black87,),
         ),
         actions: [

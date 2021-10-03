@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:ixoye_chat/helpers/mostrar_alerta.dart';
+import 'package:ixoye_chat/services/auth_service.dart';
 import 'package:ixoye_chat/widgets/btn_azul.dart';
 
 import 'package:ixoye_chat/widgets/custom_input.dart';
 import 'package:ixoye_chat/widgets/labels.dart';
 import 'package:ixoye_chat/widgets/logo.dart';
+import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({ Key? key }) : super(key: key);
@@ -59,6 +62,7 @@ class __FormState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
     return Container(
       margin: EdgeInsets.only(top: 40.0),
       padding: EdgeInsets.symmetric(horizontal: 50.0),
@@ -83,8 +87,17 @@ class __FormState extends State<_Form> {
           ),
           
           BotonAzul(
-            press: (){
-              print('hola');
+            press: authService.autenticando ? null : () async {
+              print(nameCtrl.text);
+              print(emailCtrl.text);
+              print(passCtrl.text);
+              final registroOk = await authService.register(nameCtrl.text.trim(), emailCtrl.text.trim(), passCtrl.text.trim());
+
+              if (registroOk == true) {
+                Navigator.pushReplacementNamed(context, 'usuarios');
+              } else {
+                mostrarAlerta(context, 'Registro incorrecto', registroOk);
+              }
             }, 
             texto: 'Registrar',
           )
